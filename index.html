@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quanto vale la tua casa? Valutazione gratuita</title>
+<style>
+:root{
+  --bg:#F3F6F4;--surface:#FFFFFF;--ink:#12241E;--muted:#55665F;--line:#C9D6CF;
+  --accent:#0E6B52;--accent-ink:#FFFFFF;--soft:#DCE8E2;--err:#B42318;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#0D1814;--surface:#15251F;--ink:#E8F1EC;--muted:#9DB2A8;--line:#2B4037;--accent:#4FC9A0;--accent-ink:#06241A;--soft:#1C3128;--err:#FF8A7A;}
+}
+:root[data-theme="dark"]{--bg:#0D1814;--surface:#15251F;--ink:#E8F1EC;--muted:#9DB2A8;--line:#2B4037;--accent:#4FC9A0;--accent-ink:#06241A;--soft:#1C3128;--err:#FF8A7A;}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.5;-webkit-text-size-adjust:100%}
+main{max-width:560px;margin:0 auto;padding:28px 18px 40px}
+h1{font-size:clamp(2rem,9vw,2.9rem);line-height:1.05;font-weight:800;margin:0 0 12px;letter-spacing:-.02em}
+.lead{color:var(--muted);margin:0 0 26px;font-size:1.05rem;max-width:44ch}
+form{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 16px}
+fieldset{border:0;padding:0;margin:0 0 22px}
+legend{font-weight:600;font-size:1.05rem;margin-bottom:10px;padding:0}
+label{display:block;font-size:.95rem;margin:0 0 12px}
+label span{display:block;margin-bottom:4px;color:var(--muted)}
+input[type=text],input[type=tel],input[type=number],select{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:11px 12px}
+input:focus,select:focus,button:focus-visible{outline:3px solid var(--accent);outline-offset:1px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{margin:0}
+.chips input{position:absolute;opacity:0;pointer-events:none}
+.chips span{display:inline-block;margin:0;padding:8px 14px;border:1px solid var(--line);border-radius:999px;color:var(--ink);background:var(--bg);cursor:pointer}
+.chips input:checked+span{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.chips input:focus-visible+span{outline:3px solid var(--accent);outline-offset:1px}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:.85rem;color:var(--muted)}
+.consent input{margin-top:3px;width:18px;height:18px;flex:none}
+button{width:100%;font:inherit;font-weight:600;font-size:1.05rem;background:var(--accent);color:var(--accent-ink);border:0;border-radius:10px;padding:15px;margin-top:16px;cursor:pointer}
+.err{color:var(--err);font-size:.9rem;margin:10px 0 0;min-height:1.2em}
+.done{display:none;background:var(--soft);border-radius:12px;padding:18px;margin-top:16px}
+.done.on{display:block}
+.done a{color:var(--accent);font-weight:600}
+details.info{margin:10px 0 0;font-size:.85rem;color:var(--muted)}
+details.info summary{cursor:pointer;font-weight:600;color:var(--ink)}
+details.info summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.testo{max-height:260px;overflow-y:auto;margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);line-height:1.45}
+.testo p{margin:0 0 10px}
+footer{margin-top:22px;font-size:.85rem;color:var(--muted)}
+@media (prefers-reduced-motion:no-preference){button{transition:transform .12s}button:active{transform:scale(.98)}}
+</style>
+</head>
+<body>
+<main>
+  <h1>Quanto vale la tua casa?</h1>
+  <p class="lead">Compila i dati dell’immobile: ti rispondo su WhatsApp con una valutazione basata sui prezzi reali della tua zona. È gratuita e senza alcun impegno.</p>
+
+  <form id="f" novalidate>
+    <fieldset>
+      <legend>L’immobile</legend>
+      <label><span>Comune e zona</span><input type="text" id="zona" placeholder="Es. Milano, zona Loreto" autocomplete="off" required></label>
+      <label><span>Via</span><input type="text" id="via" autocomplete="off" required></label>
+      <label><span>Tipologia</span>
+        <select id="tipo" required>
+          <option value="">Scegli…</option>
+          <option>Appartamento</option><option>Attico</option><option>Villa o villetta</option><option>Box o posto auto</option><option>Altro</option>
+        </select></label>
+      <div class="row">
+        <label><span>Superficie (m²)</span><input type="number" id="mq" inputmode="numeric" min="10" max="2000" required></label>
+        <label><span>Locali</span><input type="number" id="locali" inputmode="numeric" min="1" max="20" required></label>
+      </div>
+      <div class="row">
+        <label><span>Piano</span><input type="text" id="piano" placeholder="Es. 3 di 6" autocomplete="off"></label>
+        <label><span>Ascensore</span>
+          <select id="asc"><option>Sì</option><option>No</option></select></label>
+      </div>
+      <label><span>Stato dell’immobile</span>
+        <select id="stato" required>
+          <option value="">Scegli…</option>
+          <option>Da ristrutturare</option><option>Abitabile</option><option>Ristrutturato</option><option>Nuovo</option>
+        </select></label>
+      <span style="display:block;color:var(--muted);font-size:.95rem;margin-bottom:6px">Cosa c’è in più</span>
+      <div class="chips" id="extra">
+        <label><input type="checkbox" value="Balcone"><span>Balcone</span></label>
+        <label><input type="checkbox" value="Terrazzo"><span>Terrazzo</span></label>
+        <label><input type="checkbox" value="Box"><span>Box</span></label>
+        <label><input type="checkbox" value="Cantina"><span>Cantina</span></label>
+        <label><input type="checkbox" value="Giardino"><span>Giardino</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Come ti chiami</legend>
+      <label><span>Nome</span><input type="text" id="nome" autocomplete="given-name" required></label>
+      <label class="consent"><input type="checkbox" id="ok"><span>Ho letto l’informativa e acconsento al trattamento dei miei dati personali.</span></label>
+      <details class="info"><summary>INFORMATIVA SULLA TUTELA DEI DATI PERSONALI AI SENSI DEL REGOLAMENTO (UE) 2016/679 (“GDPR”)</summary><div class="testo">
+<p>Gentile Cliente, la società (di seguito, la “Società”), è il Titolare del trattamento dei dati da Lei forniti al momento della registrazione sul sito, o comunque acquisiti in sede di prestazione dei servizi a cui Lei può accedere. L’accesso al sito non richiede l’inserimento delle proprie generalità. Per l’eventuale fruizione del servizio on line ‘contatti’ e per avere accesso ad altri servizi aggiuntivi, dovrà inserire i Suoi dati personali in apposite sezioni del sito. I dati inseriti verranno trattati con misure di sicurezza adeguate agli attuali standard tecnologici e rispettando gli obblighi previsti dal Regolamento (UE) 2016/679 sulla protezione dei dati personali (“GDPR”). Secondo la normativa indicata, tale trattamento sarà improntato ai principi di correttezza, liceità e trasparenza e di tutela della Sua riservatezza e dei Suoi diritti. La seguente informativa è relativa solamente al presente sito e non riguarda altri siti web eventualmente consultati dall’utente attraverso link di reindirizzamento posti nelle pagine del nostro sito. Nessun dato derivante dalla consultazione del servizio web viene comunicato o diffuso. Ai sensi dell’articolo 13 del GDPR, pertanto, Le forniamo le seguenti informazioni:</p>
+<p>1. La Società raccoglie e tratta i Suoi dati personali per finalità necessarie o strumentali alla fornitura dei servizi da Lei richiesti e prestati tramite il presente sito, anche mediante comunicazione dei dati a società terze di cui all’art. 5 della presente informativa (nominate dalla Società quali responsabili del trattamento dei dati) ai fini della gestione tecnica e amministrativa dei servizi. I vostri dati potranno essere trattati per le finalità interne di compilazione di liste anagrafiche, tenuta della contabilità, fatturazione, gestione del creditore per la soddisfazione di tutti gli obblighi previsti dalle normative vigenti, scopi statistici, per comunicazioni, e servizi aggiuntivi da Lei esplicitamente richiesti. Le basi giuridiche del trattamento, a seconda dei casi, possono essere il Suo consenso, l’esecuzione di un contratto di cui Lei è parte o l’adempimento di obblighi legali cui è soggetta la Società in qualità di Titolare del trattamento.</p>
+<p>2. Il trattamento dei Suoi dati potrà inoltre avvenire: (a) per inviare informazioni ed offerte commerciali di servizi analoghi a quelli da lei acquistati in occasione dell’accesso al Sito, salvo che Lei si opponga a questo trattamento mediante comunicazione al Titolare e, ove lei presti il suo consenso espresso, (b) per inviare informazioni ed offerte commerciali, materiale pubblicitario e informativo, effettuare comunicazioni commerciali, anche interattive, compiere attività dirette di vendita o di collocamento di prodotti o servizi, anche di terzi.</p>
+<p>3. Il trattamento sarà effettuato sia manualmente che utilizzando strumenti elettronici, nell’osservanza di tutte le cautele necessarie a garantire la sicurezza e la riservatezza delle informazioni.</p>
+<p>4. I Suoi dati potranno essere trattati all’interno della nostra Società da tutti gli incaricati al trattamento nominati per iscritto dal Titolare del trattamento e formati sugli obblighi della Legge in materia di Privacy.</p>
+<p>5. I dati potranno essere comunicati a terze parti, esclusivamente per esigenze tecniche ed operative strettamente collegate alle finalità sopraelencate ed in particolare alle seguenti categorie di soggetti: a) Enti, professionisti, società o altre strutture da noi incaricate dei trattamenti connessi all’adempimento degli obblighi amministrativi, contabili, commerciali e gestionali legati all’ordinario svolgimento della nostra attività economica, anche per finalità di recupero credito; b) Alle pubbliche autorità ed amministrazioni per le finalità connesse all’adempimento di obblighi legali; c) Banche, istituti finanziari o altri soggetti per cui il trasferimento dei dati risulti necessario ai fini dello svolgimento delle attività della nostra Società, in particolare in relazione all’assolvimento, da parte nostra, delle obbligazioni contrattuali assunte nei Suoi confronti.</p>
+<p>6. I suoi dati personali saranno conservati nei server a disposizione della Società collocati nell’Unione europea. La Società non effettua trasferimenti di dati personali verso Paesi al di fuori dell’Unione Europea.</p>
+<p>7. I dati personali che la riguardano saranno conservati per tutto il tempo di durata del Suo rapporto contrattuale con la Società. Successivamente alla cessazione del rapporto contrattuale, la Società conserverà i dati personali relativi all’esecuzione del contratto per l’adempimento degli obblighi di contratto e di legge, anche di tipo fiscale. Successivamente, i dati personali relativi all’esecuzione del contratto verranno conservati per un periodo non eccedente il termine di prescrizione previsto dalla legge per far eventualmente valere o difendere un diritto in giudizio.</p>
+<p>8. Il conferimento dei Suoi dati personali è facoltativo, fermo restando che il rifiuto di divulgare i dati o di prestare il consenso al trattamento di cui al punto 1 della presente informativa comporterà l’impossibilità, da parte nostra, di concludere il contratto ed erogare gli eventuali servizi richiesti e di adempiere agli obblighi di legge. In caso di rifiuto del trattamento dei dati personali di cui all’art. 2 della presente informativa, il trattamento sarà limitato all’integrale esecuzione degli obblighi derivanti dalla fornitura dei servizi da Lei richiesti, nonché all’adempimento degli obblighi previsti da leggi, regolamenti e normativa comunitaria.</p>
+<p>9. Il Titolare del trattamento è la società. L’elenco degli eventuali responsabili del trattamento dei dati personali è disponibile presso gli uffici del Titolare e può essere richiesto al Titolare.</p>
+<p>10. In ogni momento potrà esercitare i Suoi diritti nei confronti del Titolare del trattamento, ai sensi degli artt. 15-22 GDPR, che per Sua comodità riassumiamo di seguito. In particolare, Lei ha il diritto: di ottenere la cessazione del trattamento nei casi in cui i suoi dati personali siano trattati per fini di marketing diretto, anche in relazione a servizi identici a quelli già acquistati dalla nostra Società (c.d. diritto di opposizione); di ottenere informazioni in relazione alle finalità per cui i Suoi dati personali sono trattati, al periodo del trattamento e ai soggetti cui i dati sono comunicati (c.d. diritto di accesso); di ottenere la rettifica o integrazione dei dati personali inesatti che La riguardano (c.d. diritto di rettifica); di ottenere la cancellazione dei dati personali che La riguardano nei seguenti casi (a) i dati non siano più necessari per le finalità per le quali sono stati raccolti; (b) Lei abbia ritirato il Suo consenso al trattamento dei dati qualora essi siano trattati sulla base del Suo consenso; (c) Lei si sia opposto al trattamento dei dati personali che La riguardano nel caso in cui essi siano trattari per un nostro legittimo interesse; o (d) il trattamento dei suoi dati personali non sia conforme alla legge. Tuttavia, Le segnaliamo che la conservazione dei dati personali da parte della Società è lecita qualora sia necessaria per consentirle di adempiere un obbligo legale o per accertare, esercitare o difendere un diritto in sede giudiziaria (c.d. diritto di cancellazione); di ottenere che i dati personali che La riguardano siano solo conservati senza che di essi sia fatto altro uso nei seguenti casi (a) Lei contesti l’esattezza dei dati personali, per il periodo necessario a consentirci di verificare l’esattezza di tali dati personali; (b) il trattamento sia illecito ma Lei si opponga comunque alla cancellazione dei dati personali da parte nostra; (c) i dati personali Le siano necessari per l’accertamento, l’esercizio o la difesa di un diritto in sede giudiziaria; (d) Lei si sia opposto al trattamento e si sia in attesa della verifica in merito all’eventuale prevalenza dei nostri motivi legittimi al trattamento rispetto a quelli dell’interessato (c.d. diritto di limitazione); di ricevere in un formato di uso comune, leggibile da dispositivo automatico e interoperabile i dati personali che La riguardano trattati con mezzi automatizzati, se essi siano trattati in forza di contratto o sulla base del Suo consenso (c.d. diritto di portabilità). Le ricordiamo inoltre che Lei ha diritto di rivolgersi al Garante per la protezione dei dati personali (Piazza Venezia, 11 – 00187 Roma) per far valere i Suoi diritti in relazione al trattamento dei Suoi dati personali.</p>
+      </div></details>
+    </fieldset>
+
+    <button type="submit">Invia su WhatsApp</button>
+    <p class="err" id="err" role="alert"></p>
+    <div class="done" id="done">Si apre WhatsApp con il messaggio già pronto: tocca Invia. Se non si apre, <a id="fallback" href="#" target="_blank" rel="noopener">tocca qui</a>.</div>
+  </form>
+
+  <footer>Vincenzo Fossati, Studio La Maggiore<br>Milano: corso Buenos Aires 53<br>Monza: via Sempione 13/A</footer>
+</main>
+
+<script>
+(function(){
+  var NUMERO = "393394117302"; // numero WhatsApp di Vincenzo, senza + né spazi
+  var f = document.getElementById("f");
+  var err = document.getElementById("err");
+  function v(id){ return document.getElementById(id).value.trim(); }
+  f.addEventListener("submit", function(e){
+    e.preventDefault();
+    var mancanti = [];
+    if(!v("zona")) mancanti.push("comune e zona");
+    if(!v("via")) mancanti.push("via");
+    if(!v("tipo")) mancanti.push("tipologia");
+    if(!v("mq")) mancanti.push("superficie");
+    if(!v("locali")) mancanti.push("locali");
+    if(!v("stato")) mancanti.push("stato dell’immobile");
+    if(!v("nome")) mancanti.push("nome");
+    if(mancanti.length){ err.textContent = "Mancano: " + mancanti.join(", ") + "."; return; }
+    if(!document.getElementById("ok").checked){ err.textContent = "Spunta il consenso per poter inviare."; return; }
+    err.textContent = "";
+    var extra = Array.prototype.map.call(document.querySelectorAll("#extra input:checked"), function(i){return i.value;});
+    var righe = [
+      "Ciao Vincenzo, sono " + v("nome") + ". Vorrei sapere quanto vale la mia casa.",
+      "",
+      "Zona: " + v("zona") + ", " + v("via"),
+      "Tipologia: " + v("tipo"),
+      "Superficie: " + v("mq") + " m²",
+      "Locali: " + v("locali"),
+      "Piano: " + (v("piano") || "non indicato") + ", ascensore: " + v("asc"),
+      "Stato: " + v("stato"),
+      "Extra: " + (extra.length ? extra.join(", ") : "nessuno")
+    ];
+    var url = "https://wa.me/" + NUMERO + "?text=" + encodeURIComponent(righe.join("\n"));
+    var fb = document.getElementById("fallback");
+    fb.href = url;
+    document.getElementById("done").classList.add("on");
+    var w = null;
+    try { w = window.open(url, "_blank"); } catch(x) {}
+    if(!w){ try { window.top.location.href = url; } catch(y) {} }
+  });
+})();
+</script>
+</body>
+</html>
